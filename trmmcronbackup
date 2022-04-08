@@ -1,0 +1,93 @@
+#! /bin/bash
+#
+# trmmcronbackup : Back up Tactical RMM using distribution script, keeping
+#   only a specified number of backups.  This is intended for a daily cron
+#   job.  Modify the configuration variables for your environment, and then
+#   move (or create link) to this script to the appropriate daily cron path
+#   (e.g. /etc/cron.daily/).
+# License:  GPL 2.0 or newer
+
+# Configuration Variables
+BACKUP_COUNT=8
+SCRIPT_USER=tactical
+PATH_TO_SCRIPT=/home/tactical/backup.sh
+PATH_TO_BACKUPS=/rmmbackups
+VERBOSE=1 # False = 1 ; True = 0
+
+# Script begins below
+vecho() {  # Echo only if user specifies Verbose output
+    if [[ ${VERBOSE} -eq 0 ]]; then echo "${1}"; fi
+}
+
+# Get initial count of backup files
+INITIAL_COUNT=$(sudo su ${SCRIPT_USER} -c "ls ${PATH_TO_BACKUPS}|wc -l")
+vecho "Initial backup file count:  ${INITIAL_COUNT}"
+case ${INITIAL_COUNT} in
+    ''|*[!0-9]*) # Make sure variable is a number
+        echo "Bad initial count of backups:  ${INITIAL_COUNT}.  Backup was not performed."
+        exit 1
+    ;;
+esac
+
+# Run the backup script
+SCRIPT_COMMAND=(sudo su - "${SCRIPT_USER}" "-c \"cd ~ ; ${PATH_TO_SCRIPT}\"" )
+vecho "Run Script:  ${SCRIPT_COMMAND[*]}"
+# I don't konw *what* the backup script does to mangle stdout and stderr,
+# but a simple $VAR=$(command 2>&1) doesn't work.  So we do it the hard way.
+if ! [[ ${VERBOSE} -eq 0 ]]; then
+    eval "${SCRIPT_COMMAND[*]}" >/dev/null 2>&1
+else
+    eval "${SCRIPT_COMMAND[*]}"
+fi
+SCRIPT_RETURN=$?
+vecho "The script returned:  ${SCRIPT_RETURN}"
+if ! [[ "${SCRIPT_RETURN}" -eq 0 ]] ; then
+    echo "Backup script failed.  Cleanup was not performed."
+    exit 1
+fi
+
+# Get new count of backup files and check that a new one was created
+NEW_COUNT=$(sudo su ${SCRIPT_USER} -c "ls ${PATH_TO_BACKUPS}|wc -l")
+vecho "Post-run backup file count:  ${NEW_COUNT}"
+case ${NEW_COUNT} in
+    ''|*[!0-9]*) # Make sure variable is a number
+        echo "Bad after-script count of backups:  ${NEW_COUNT}.  Cleanup was not performed."
+        exit 1
+    ;;
+esac
+if ! [[ "${NEW_COUNT}" -gt "${INITIAL_COUNT}" ]] ; then
+    echo "Backup did not seem to create new file.  Cleanup was not performed."
+    exit 1
+fi
+
+# Check if we have too many backup files and delete until we don't
+while [ "${NEW_COUNT}" -gt "${BACKUP_COUNT}" ] ; do
+    vecho "There are more than ${BACKUP_COUNT} files:  delete oldest file."
+    # Get the list of files sorted by change date and get the last one
+    FILE_TO_DELETE=$(sudo su ${SCRIPT_USER} -c "ls ${PATH_TO_BACKUPS} --sort=time --time=ctime|tail -1")
+    vecho "File to delete:  ${FILE_TO_DELETE}"
+    case ${FILE_TO_DELETE} in
+    ''|*[!0-9a-zA-Z._-]*) # Make sure variable uses only limited characters
+        echo "Filename contains unexpected characters.  Cleanup cancelled."
+        exit 1
+    ;;
+    esac
+    # Delete the file
+    eval "sudo su - ${SCRIPT_USER} -c \"cd ~ ; rm -f --interactive=never '${PATH_TO_BACKUPS}/${FILE_TO_DELETE}'\""
+    if [[ -f ${PATH_TO_BACKUPS}/${FILE_TO_DELETE} ]] ; then
+        echo "Backup file ${PATH_TO_BACKUPS}/${FILE_TO_DELETE} did not delete.  Cancelling cleanup."
+        exit 1
+    fi
+    # Get the updated count
+    NEW_COUNT=$(sudo su ${SCRIPT_USER} -c "ls ${PATH_TO_BACKUPS}|wc -l")
+    vecho "Updated backup file count:  ${NEW_COUNT}"
+    case ${NEW_COUNT} in
+        ''|*[!0-9]*) # Make sure variable is a number
+            echo "Error getting new count of backups.  Cleanup was not performed."
+            exit 1
+        ;;
+    esac
+done
+vecho "After cleanup, ${NEW_COUNT} files remain with a maximum of ${BACKUP_COUNT}."
+vecho "Backup and cleanup complete."
+exit 0
