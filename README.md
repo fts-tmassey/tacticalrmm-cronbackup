@@ -7,14 +7,8 @@ Nothing fancy here:  a Bash script that uses the TRMM-supplied backup script via
 These are suggested, general instructions, based on Ubuntu 20.04.  You will likely need to adapt them for your environment, especially the user and path used to install TRMM.  This also assumes that you have sudo access.  If you're running as root, remove the "sudo" portion of any commands where it's present.
 
 ## Get the TRMM backup script
-This assumes that the TRMM manual backup script is already in place.  You can find the TRMM doc here:  https://docs.tacticalrmm.com/backup/
+This assumes that the TRMM backup.sh script is already in place.  You can find the TRMM doc here:  https://docs.tacticalrmm.com/backup/   If you haven't downloaded backup.sh yet, use those instructions to download and run it, and stop before you add it to cron:  we will do so here.  It's basically just 'wget the file, make it executable and run it'.  Technically, you can put the script anywhere;  for me, the logical place is in same path where you installed TRMM -- where you downloaded and ran install.sh.  Wherever you put it, you will update the cron script to point to it.
 
-You can put the script anywhere; for me, the logical place is the same path where you installed TRMM.  Wherever you put it, you will update the cron script to point to it.  In case you haven't downloaded that script already, my suggestion is:
-```
-cd [wherever you installed TRMM]
-wget -N https://raw.githubusercontent.com/amidaware/tacticalrmm/master/backup.sh
-chmod +x backup.sh
-```
 If you want, feel free to manually run that script.  If it doesn't work here, it won't work via cron, either, so it's worth the effort.
 
 ## Put cron script in place
@@ -25,6 +19,7 @@ sudo mv trmmcronbackup /etc/cron.daily
 sudo chown root:root /etc/cron.daily/trmmcronbackup
 sudo chmod 755 /etc/cron.daily/trmmcronbackup
 ```
+
 ## Modify for your environment
 Because we're launching it directly from a cron folder, we can't exactly use parameters.  You will need to update the internal variables to reflect your environment:
 ```
