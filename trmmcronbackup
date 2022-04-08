@@ -5,6 +5,7 @@
 #   job.  Modify the configuration variables for your environment, and then
 #   move (or create link) to this script to the appropriate daily cron path
 #   (e.g. /etc/cron.daily/).
+# (C) 2022, Timothy J. Massey
 # License:  GPL 2.0 or newer
 
 # Configuration Variables
