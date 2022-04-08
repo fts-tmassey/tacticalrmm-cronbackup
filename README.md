@@ -33,7 +33,7 @@ It's easy to test:
 ```
 sudo /etc/cron.daily/trmm-backup-with-rotation
 ```
-If "VERBOSE=1", you will not see any output unless there is a serious error.  If you want to see details, temporarily update the scipt to "VERBOSE=0".
+If `VERBOSE=1`, you will not see any output unless there is a serious error.  If you want to see details, temporarily update the scipt to `VERBOSE=0`.
 
 # TODO Items
 TRMM recommends that you periodically prune database items to reduce backup size.  I'd like to add this to the script (or maybe have a different script for cron.monthly).  But until my backups get too large to deal with, I've not dug into it yet.  Patches gratefully considered!  :)
