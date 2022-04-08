@@ -22,8 +22,8 @@ Download script copy/move it to a cron-schedued directory.  For Ubuntu 20.04:
 ```
 wget https://github.com/fts-tmassey/tacticalrmm-cronbackup/raw/main/trmmcronbackup
 sudo mv trmmcronbackup /etc/cron.daily
-sudo chown root:root /etc/cron.daily/trmm-backup-with-rotation
-sudo chmod 755 /etc/cron.daily/trmm-backup-with-rotation
+sudo chown root:root /etc/cron.daily/trmmcronbackup
+sudo chmod 755 /etc/cron.daily/trmmcronbackup
 ```
 ## Modify for your environment
 Because we're launching it directly from a cron folder, we can't exactly use parameters.  You will need to update the internal variables to refiect your environment:
