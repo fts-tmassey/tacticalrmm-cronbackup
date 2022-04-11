@@ -13,11 +13,11 @@ BACKUP_COUNT=8
 SCRIPT_USER=tactical
 PATH_TO_SCRIPT=/home/tactical/backup.sh
 PATH_TO_BACKUPS=/rmmbackups
-VERBOSE=1 # False = 1 ; True = 0
+VERBOSE=FALSE                   # Use TRUE for verbose output
 
 # Script begins below
 vecho() {  # Echo only if user specifies Verbose output
-    if [[ ${VERBOSE} -eq 0 ]]; then echo "${1}"; fi
+    if [[ "${VERBOSE}" == "TRUE" ]]; then echo "${1}"; fi
 }
 
 # Get initial count of backup files
@@ -35,7 +35,7 @@ SCRIPT_COMMAND=(sudo su - "${SCRIPT_USER}" "-c \"cd ~ ; ${PATH_TO_SCRIPT}\"" )
 vecho "Run Script:  ${SCRIPT_COMMAND[*]}"
 # I don't konw *what* the backup script does to mangle stdout and stderr,
 # but a simple $VAR=$(command 2>&1) doesn't work.  So we do it the hard way.
-if ! [[ ${VERBOSE} -eq 0 ]]; then
+if [[ "${VERBOSE}" == "TRUE" ]]; then
     eval "${SCRIPT_COMMAND[*]}" >/dev/null 2>&1
 else
     eval "${SCRIPT_COMMAND[*]}"
