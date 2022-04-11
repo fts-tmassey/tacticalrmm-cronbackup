@@ -11,7 +11,7 @@
 # Configuration Variables
 BACKUP_COUNT=8                  # Number of backups to keep
 PATH_TO_SCRIPT=/rmm/backup.sh   # Path to backup script
-#SCRIPT_USER=tactical           # Script to run (unset: use script owner)
+#SCRIPT_USER=tactical           # Run script as (unset: use script owner)
 PATH_TO_BACKUPS=/rmmbackups     # Path to backup destination
 VERBOSE=FALSE                   # Use TRUE for verbose output
 
