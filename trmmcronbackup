@@ -64,14 +64,12 @@ case ${INITIAL_COUNT} in
 esac
 
 # Run the backup script
-SCRIPT_COMMAND=(sudo su - "${SCRIPT_USER}" "-c \"cd ~ ; ${PATH_TO_SCRIPT}\"" )
-vecho "Run Script:  ${SCRIPT_COMMAND[*]}"
-# I don't konw *what* the backup script does to mangle stdout and stderr,
-# but a simple $VAR=$(command 2>&1) doesn't work.  So we do it the hard way.
+SCRIPT_CMD_ARRAY=(sudo su - "${SCRIPT_USER}" "-c \"cd ~ ; ${PATH_TO_SCRIPT}\"" )
+vecho "Run Script:  ${SCRIPT_CMD_ARRAY[*]}"
 if [[ "${VERBOSE}" == "TRUE" ]]; then
-    eval "${SCRIPT_COMMAND[*]}" >/dev/null 2>&1
+    eval "${SCRIPT_CMD_ARRAY[*]}"
 else
-    eval "${SCRIPT_COMMAND[*]}"
+    eval "${SCRIPT_CMD_ARRAY[*]} &>/dev/null"
 fi
 SCRIPT_RETURN=$?
 vecho "The script returned:  ${SCRIPT_RETURN}"
