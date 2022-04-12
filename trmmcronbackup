@@ -9,11 +9,11 @@
 # License:  GPL 2.0 or newer
 
 # Configuration Variables
+VERBOSE=FALSE                   # Use TRUE for verbose output
 BACKUP_COUNT=8                  # Number of backups to keep
 PATH_TO_SCRIPT=/rmm/backup.sh   # Path to backup script
-#SCRIPT_USER=tactical           # Run script as (unset: use script owner)
 PATH_TO_BACKUPS=/rmmbackups     # Path to backup destination
-VERBOSE=FALSE                   # Use TRUE for verbose output
+#SCRIPT_USER=tactical           # Run script as (unset: use script owner)
 
 # Script begins below
 vecho() {  # Echo only if user specifies Verbose output
@@ -38,6 +38,11 @@ if [[ ! -x ${PATH_TO_SCRIPT} ]]; then
     echo "The file pointed to by PATH_TO_SCRIPT is not executable.  Exiting..."
     exit 1
 fi
+vecho "-- PATH_TO_BACKUPS:  \"${PATH_TO_BACKUPS}\""
+if [[ ! -d ${PATH_TO_BACKUPS} ]]; then
+    echo "PATH_TO_BACKUPS is not a valid directory.  Exiting..."
+    exit 1
+fi
 vecho "-- SCRIPT_USER:  \"${SCRIPT_USER}\""
 if [ -z "${SCRIPT_USER}" ]; then                    # If user unset
     SCRIPT_USER=$(stat -c '%U' "${PATH_TO_SCRIPT}") #  use script owner
@@ -45,10 +50,6 @@ if [ -z "${SCRIPT_USER}" ]; then                    # If user unset
 fi
 if ! id -u "${SCRIPT_USER}" &>/dev/null; then
     echo "The user does not exist.  Exiting..."
-fi
-vecho "-- PATH_TO_BACKUPS:  \"${PATH_TO_BACKUPS}\""
-if [[ ! -d ${PATH_TO_BACKUPS} ]]; then
-    echo "PATH_TO_BACKUPS is not a valid directory.  Exiting..."
     exit 1
 fi
 vecho "Initial configuration variables:  OK"
