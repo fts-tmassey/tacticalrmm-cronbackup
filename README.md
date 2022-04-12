@@ -1,3 +1,5 @@
+NOTE: 2022/04/12 - I am not actively tracking TRMM development at this time, so future changes in backup.sh may break this script.
+
 # tacticalrmm-cronbackup
 Script to back up Tactical RMM via cron with rotating backup
 
