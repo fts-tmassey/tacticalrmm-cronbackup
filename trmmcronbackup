@@ -106,7 +106,8 @@ while [ "${NEW_COUNT}" -gt "${BACKUP_COUNT}" ] ; do
     ;;
     esac
     # Delete the file
-    eval "sudo su - ${SCRIPT_USER} -c \"cd ~ ; rm -f --interactive=never '${PATH_TO_BACKUPS}/${FILE_TO_DELETE}'\""
+    RM_OUT=$(sudo su "${SCRIPT_USER}" -c "rm -fv --interactive=never '${PATH_TO_BACKUPS}/${FILE_TO_DELETE}'")
+    vecho "rm output:  ${RM_OUT}"
     if [[ -f ${PATH_TO_BACKUPS}/${FILE_TO_DELETE} ]] ; then
         echo "Backup file ${PATH_TO_BACKUPS}/${FILE_TO_DELETE} did not delete.  Cancelling cleanup."
         exit 1
