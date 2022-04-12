@@ -65,6 +65,7 @@ case ${INITIAL_COUNT} in
 esac
 
 # Run the backup script
+# stderr is not captured with $(), so use array/eval to run backup.sh silently
 SCRIPT_CMD_ARRAY=(sudo su - "${SCRIPT_USER}" "-c \"cd ~ ; ${PATH_TO_SCRIPT}\"" )
 vecho "Run Script:  ${SCRIPT_CMD_ARRAY[*]}"
 if [[ "${VERBOSE}" == "TRUE" ]]; then
