@@ -112,14 +112,19 @@ while [ "${NEW_COUNT}" -gt "${BACKUP_COUNT}" ] ; do
         exit 1
     fi
     # Get the updated count
+    INITIAL_COUNT=${NEW_COUNT}
     NEW_COUNT=$(sudo su "${SCRIPT_USER}" -c "ls ${PATH_TO_BACKUPS}|wc -l")
     vecho "Updated backup file count:  ${NEW_COUNT}"
     case ${NEW_COUNT} in
         ''|*[!0-9]*) # Make sure variable is a number
-            echo "Error getting new count of backups.  Cleanup was not performed."
+            echo "Error getting new count of backups.  Cleanup was cancelled."
             exit 1
         ;;
     esac
+    if ! [[ "${NEW_COUNT}" -lt "${INITIAL_COUNT}" ]] ; then
+        echo "Cleanup did not seem to remove old file.  Cleanup was cancelled."
+        exit 1
+    fi
 done
 vecho "After cleanup, ${NEW_COUNT} files remain with a maximum of ${BACKUP_COUNT}."
 vecho "Backup and cleanup complete."
