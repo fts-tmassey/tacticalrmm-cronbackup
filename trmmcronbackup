@@ -1,12 +1,14 @@
 #! /bin/bash
-#
-# trmmcronbackup : Back up Tactical RMM using distribution script, keeping
-#   only a specified number of backups.  This is intended for a daily cron
-#   job.  Modify the configuration variables for your environment, and then
-#   move (or create link) to this script to the appropriate daily cron path
-#   (e.g. /etc/cron.daily/).
-# (C) 2022, Timothy J. Massey
-# License:  GPL 2.0 or newer
+# trmmcronbackup : Back up Tactical RMM via backup.sh with backup rotation
+
+# SPDX-FileCopyrightText: 2022 Timothy J. Massey <github:fts-tmassey>
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+# This script runs the standard TRMM-provided backup.sh script and keeps
+# up to a maximum number of backup files, deleting the oldest backups when
+# necessary.  This is intended to run as a periodic cron job, simply by
+# putting it in e.g. cron.daily.  You can find more details at:
+#     https://github.com/fts-tmassey/tacticalrmm-cronbackup
 
 # Configuration Variables
 VERBOSE=FALSE                   # Use TRUE for verbose output
