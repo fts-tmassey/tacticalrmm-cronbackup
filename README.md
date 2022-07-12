@@ -42,7 +42,7 @@ Update the configuration variables to meet your needs and installation details, 
 ## Test the script
 It's easy to test:
 ```
-sudo /etc/cron.daily/trmm-backup-with-rotation
+sudo /etc/cron.daily/trmmcronbackup
 ```
 If `VERBOSE=FALSE`, the default, you will not see any output unless there is a serious error.  If you want to see details, temporarily update the scipt to `VERBOSE=TRUE`.
 
